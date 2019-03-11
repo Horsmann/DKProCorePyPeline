@@ -1,2 +1,2 @@
 # DKProPyPeline
-API to call Java-DKPro from Python
+API to call Java-DKPro (DKPro Python Pipeline) from Python
