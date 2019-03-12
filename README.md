@@ -84,6 +84,8 @@ A Java parameter `MyEngine.PARAM_SOURCE_LOCATION, '/usr/home/data.txt'` becomes 
 <h2>Requirements</h2>
 ```
 1) Java compiler and runtime
+
 2) Maven
+
 3) both tools must be setup correctly to work on the command line or shell environment
 ```
