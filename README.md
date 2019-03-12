@@ -31,30 +31,30 @@ becomes the following Pyhton DKPro Core pipeline
 
 ```python
 reader = CollectionReader(component = "de.tudarmstadt.ukp.dkpro.core.io.text.StringReader", 
-					        group = "de.tudarmstadt.ukp.dkpro.core",
-					     artifact = "de.tudarmstadt.ukp.dkpro.core.io.text-asl",
-					     language = "en", 
-					      version = "1.10.0",
-					  document_id = "123",
-				    document_text = "This is a text. Isn't this cool?")
+		              group = "de.tudarmstadt.ukp.dkpro.core",
+                           artifact = "de.tudarmstadt.ukp.dkpro.core.io.text-asl",
+	                   language = "en", 
+                            version = "1.10.0",
+                        document_id = "123",
+	              document_text = "This is a text. Isn't this cool?")
 segmenter = AnalysisEngine(component = "de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter",
-					           group = "de.tudarmstadt.ukp.dkpro.core",
-					         version = "1.10.0",
-					        artifact = "de.tudarmstadt.ukp.dkpro.core.tokit-asl")
+                               group = "de.tudarmstadt.ukp.dkpro.core",
+		             version = "1.10.0",
+                            artifact = "de.tudarmstadt.ukp.dkpro.core.tokit-asl")
 pos = AnalysisEngine(component = "de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger", 
-				         group = "de.tudarmstadt.ukp.dkpro.core",
-				       version = "1.10.0",
-				      artifact = "de.tudarmstadt.ukp.dkpro.core.opennlp-asl",
-				       variant = "maxent")
+	                 group = "de.tudarmstadt.ukp.dkpro.core",
+                       version = "1.10.0",
+                      artifact = "de.tudarmstadt.ukp.dkpro.core.opennlp-asl",
+                       variant = "maxent")
 writer = AnalysisEngine(component = "de.tudarmstadt.ukp.dkpro.core.io.conll.Conll2003Writer", 
-				            group = "de.tudarmstadt.ukp.dkpro.core",
-				          version = "1.9.0",
-				         artifact = "de.tudarmstadt.ukp.dkpro.core.io.conll-asl",
-				        overwrite = "true",
-				      write_chunk = "false",
-			   write_named_entity = "false",
-				  target_location = ".../outputFolder/",
-				  target_encoding = "utf-8")
+                            group = "de.tudarmstadt.ukp.dkpro.core",
+			  version = "1.9.0",
+                         artifact = "de.tudarmstadt.ukp.dkpro.core.io.conll-asl",
+                        overwrite = "true",
+	              write_chunk = "false",
+               write_named_entity = "false",
+                  target_location = ".../outputFolder/",
+	          target_encoding = "utf-8")
 
 pipeline = UIMAPipeline("template_maven")
 pipeline.set_reader(reader)
