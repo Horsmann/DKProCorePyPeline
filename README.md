@@ -89,6 +89,8 @@ A Java parameter `MyEngine.PARAM_SOURCE_LOCATION, '/usr/home/data.txt'` becomes 
 2) Maven
 
 3) both tools must be setup correctly to work on the command line or shell environment
+
+4) Python3
 ```
 
 Java version depends on the DKPro version you are using.
