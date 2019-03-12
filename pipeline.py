@@ -29,7 +29,7 @@ writer = DKProComponent(component = "de.tudarmstadt.ukp.dkpro.core.io.conll.Conl
 				  target_encoding = "utf-8",
 			   filename_extension = ".txt")
 
-pipeline = DKProPipeline()
+pipeline = UIMAPipeline()
 pipeline.set_reader(reader)
 pipeline.add_engine(segmenter)
 pipeline.add_engine(pos)

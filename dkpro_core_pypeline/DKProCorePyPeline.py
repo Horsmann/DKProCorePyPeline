@@ -23,7 +23,7 @@ ch.setFormatter(formatter)
 logger.addHandler(fh)
 logger.addHandler(ch)
 
-class DKProPipeline:
+class UIMAPipeline:
     """A DKPro pipeline. The template folder contains the prototype for a 
     Java Main class and a pom.xml"""
     def __init__(self):
