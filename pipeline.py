@@ -2,23 +2,23 @@ from dkpro_core_pypeline.DKProCorePyPeline import *
 from os.path import expanduser
 user_home = expanduser("~")
 
-reader = DKProComponent(component = "de.tudarmstadt.ukp.dkpro.core.io.text.StringReader", 
-					        group = "de.tudarmstadt.ukp.dkpro.core",
-					     artifact = "de.tudarmstadt.ukp.dkpro.core.io.text-asl",
-					     language = "en", 
-					      version = "1.10.0",
-					  document_id = "123",
-				    document_text = "This is a text. Isn't this cool?")
-segmenter = DKProComponent(component = "de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter",
+reader = CollectionReader(component = "de.tudarmstadt.ukp.dkpro.core.io.text.StringReader", 
+					          group = "de.tudarmstadt.ukp.dkpro.core",
+					       artifact = "de.tudarmstadt.ukp.dkpro.core.io.text-asl",
+					       language = "en", 
+					        version = "1.10.0",
+					    document_id = "123",
+				      document_text = "This is a text. Isn't this cool?")
+segmenter = AnalysisEngine(component = "de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter",
 					           group = "de.tudarmstadt.ukp.dkpro.core",
 					         version = "1.10.0",
 					        artifact = "de.tudarmstadt.ukp.dkpro.core.tokit-asl")
-pos = DKProComponent(component = "de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger", 
+pos = AnalysisEngine(component = "de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger", 
 				         group = "de.tudarmstadt.ukp.dkpro.core",
 				       version = "1.10.0",
 				      artifact = "de.tudarmstadt.ukp.dkpro.core.opennlp-asl",
 				       variant = "maxent")
-writer = DKProComponent(component = "de.tudarmstadt.ukp.dkpro.core.io.conll.Conll2003Writer", 
+writer = AnalysisEngine(component = "de.tudarmstadt.ukp.dkpro.core.io.conll.Conll2003Writer", 
 				            group = "de.tudarmstadt.ukp.dkpro.core",
 				          version = "1.9.0",
 				         artifact = "de.tudarmstadt.ukp.dkpro.core.io.conll-asl",

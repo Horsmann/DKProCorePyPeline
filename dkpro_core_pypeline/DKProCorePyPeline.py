@@ -189,7 +189,7 @@ class PomXmlBuilder:
             for line in pom_lines:
                 f.write(line)
 
-class DKProComponent():
+class DKProCoreComponent():
    """A generic DKPro Component which represents a CollectionReaderDescription or AnalysisEngineDescription"""
    def __init__(self, **kwargs):
        self.__required=["component", "group", "version", "artifact"]
@@ -223,4 +223,9 @@ class DKProComponent():
     
    def get_short_name(self):
         return self.__dict["component"].split(".")[-1] 
-                                
+
+class CollectionReader(DKProCoreComponent):
+    pass
+    
+class AnalysisEngine(DKProCoreComponent):
+    pass    
