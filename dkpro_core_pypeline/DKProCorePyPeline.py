@@ -23,6 +23,13 @@ ch.setFormatter(formatter)
 logger.addHandler(fh)
 logger.addHandler(ch)
 
+class CommandExecutor:
+    @staticmethod
+    def execute(cmd):
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        if result.returncode:
+            raise ValueError(result.stdout)
+
 class UIMAPipeline:
     """A DKPro pipeline. The template folder contains the prototype for a 
     Java Main class and a pom.xml"""
@@ -51,14 +58,14 @@ class UIMAPipeline:
         logger.debug("Using pom located at [%s]" % self.pom.target_file)
         logger.info("Running 'mvn clean install'")
         compile_cmd = ['mvn', 'clean', 'install', '-f', self.pom.target_file]
-        subprocess.check_output(compile_cmd, stderr=subprocess.STDOUT)
+        CommandExecutor.execute(compile_cmd)
         logger.info("...completed 'mvn clean install'")
         
         logger.info("Running 'mvn exec:java'")        
         main_class_project_relative = re.sub("/", ".", self.main.target_package) + "." + self.main.TEMPLATE_CLASS_NAME
         exec_main_parameter = "-Dexec.mainClass=" + main_class_project_relative
         execute_cmd = ['mvn', 'exec:java', exec_main_parameter, '-f', self.pom.target_file]
-        subprocess.check_output(execute_cmd, stderr=subprocess.STDOUT)                
+        CommandExecutor.execute(execute_cmd)
         logger.info("...completed 'mvn exec:java'")
 
 class MainClassBuilder:
