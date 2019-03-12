@@ -66,11 +66,13 @@ pipeline.execute()
 ```
 
 <h2>Specifying a component</h2>
-A component consists of at least three parameters. 
-- `component`, which is the fully qualified path of the component's Java class (i.e., the import of the class in the Java file)
-- `artifact`, the artifact id of the Maven artifact  in which the component is located
-- `group`, the group id of the Maven artifact
-- `version`, the version of the Maven artifact
+A component consists of at least four parameters. 
+```
+component, which is the fully qualified path of the component's Java class (i.e., the import of the class in the Java file)
+artifact, the artifact id of the Maven artifact  in which the component is located
+group, the group id of the Maven artifact
+version, the version of the Maven artifact
+```
 
 <h2>Providing parameters</h2>
 Java-styled `CollectionReader` or `AnalysisEngine` parameters are provided as named parameters in python. A Java parameter `MyEngine.PARAM_SOURCE_LOCATION, '/usr/home/data.txt'` becomes `source_location = '/usr/home/data.txt'`.
