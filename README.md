@@ -82,6 +82,7 @@ A Java parameter `MyEngine.PARAM_SOURCE_LOCATION, '/usr/home/data.txt'` becomes 
 `PARAM_` is omitted but the name of the following parameter must be exactly identical to the Java version otherwise an exception will be thrown.
 
 <h2>Requirements</h2>
+
 ```
 1) Java compiler and runtime
 
@@ -89,3 +90,5 @@ A Java parameter `MyEngine.PARAM_SOURCE_LOCATION, '/usr/home/data.txt'` becomes 
 
 3) both tools must be setup correctly to work on the command line or shell environment
 ```
+
+Java version depends on the DKPro version you are using.
