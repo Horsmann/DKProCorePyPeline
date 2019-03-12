@@ -28,6 +28,8 @@ class CommandExecutor:
     def execute(cmd):
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         if result.returncode:
+            logger.error("Command failed: [%s]" % ' '.join(cmd))
+            logger.error("Error message of failed command: %s" % result.stdout)
             raise ValueError(result.stdout)
 
 class UIMAPipeline:
