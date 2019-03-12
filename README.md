@@ -20,7 +20,7 @@ Java DKPro Core pipeline version
 
         AnalysisEngineDescription writer = AnalysisEngineFactory.createEngineDescription(
                 Conll2003Writer.class, Conll2003Writer.PARAM_TARGET_LOCATION,
-                ".../outputFile.txt", Conll2003Writer.PARAM_TARGET_ENCODING, "utf-8",
+                ".../outputFolder/", Conll2003Writer.PARAM_TARGET_ENCODING, "utf-8",
                 Conll2003Writer.PARAM_OVERWRITE, true);
 
         SimplePipeline.runPipeline(reader, segmenter, pos, writer);
@@ -53,9 +53,8 @@ writer = DKProComponent(component = "de.tudarmstadt.ukp.dkpro.core.io.conll.Conl
 				        overwrite = "true",
 				      write_chunk = "false",
 			   write_named_entity = "false",
-				  target_location = "/Users/toobee/Desktop/targetFolderConll",
-				  target_encoding = "utf-8",
-			   filename_extension = ".txt")
+				  target_location = ".../outputFolder/",
+				  target_encoding = "utf-8")
 
 pipeline = DKProPipeline("template_maven")
 pipeline.set_reader(reader)
@@ -76,4 +75,13 @@ d) version - the version of the Maven artifact
 ```
 
 <h2>Providing parameters</h2>
-Java-styled `CollectionReader` or `AnalysisEngine` parameters are provided as named parameters in python. A Java parameter `MyEngine.PARAM_SOURCE_LOCATION, '/usr/home/data.txt'` becomes `source_location = '/usr/home/data.txt'`.
+
+Java-styled `CollectionReader` or `AnalysisEngine` parameters are provided as named parameters in python. 
+
+A Java parameter `MyEngine.PARAM_SOURCE_LOCATION, '/usr/home/data.txt'` becomes `source_location = '/usr/home/data.txt'`.
+`PARAM_` is omitted but the name of the following parameter must be exactly identical to the Java version otherwise an exception will be thrown.
+
+<h2>Requirements</h2>
+1) Java compiler and runtime
+2) Maven
+3) both tools must be setup correctly to work on the command line or shell environment
