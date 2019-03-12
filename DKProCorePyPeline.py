@@ -15,7 +15,8 @@ fh.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s,%(msecs)d %(levelname)-5s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%Y-%m-%d:%H:%M:%S')
 fh.setFormatter(formatter)
 ch.setFormatter(formatter)
 
@@ -26,10 +27,10 @@ class DKProPipeline:
     """A DKPro pipeline. The template folder contains the prototype for a 
     Java Main class and a pom.xml"""
     def __init__(self, template_folder):
-        self.working_directory = tempfile.TemporaryDirectory()
-        #self.working_directory = "/Users/toobee/Desktop/myTmp"
-        self.main = MainClassBuilder(template_folder, self.working_directory.name)
-        self.pom = PomXmlBuilder(template_folder, self.working_directory.name)
+        #self.working_directory = tempfile.TemporaryDirectory()
+        self.working_directory = "/Users/toobee/Desktop/myTmp"
+        self.main = MainClassBuilder(template_folder, self.working_directory)
+        self.pom = PomXmlBuilder(template_folder, self.working_directory)
     
     def set_reader(self, reader):
         self.main.set_reader(reader)
@@ -47,17 +48,18 @@ class DKProPipeline:
         self.main.generate()
         self.pom.generate()
         
-        logger.debug("Running 'mvn clean install' on project [%s]" % self.pom.target_file)
+        logger.debug("Using pom located at [%s]" % self.pom.target_file)
+        logger.info("Running 'mvn clean install'")
         compile_cmd = ['mvn', 'clean', 'install', '-f', self.pom.target_file]
         subprocess.check_output(compile_cmd, stderr=subprocess.STDOUT)
-        logger.debug("...completed 'mvn clean install' for [%s]" % self.pom.target_file)
+        logger.info("...completed 'mvn clean install'")
         
-        logger.debug("Running 'mvn exec:java' on project [%s] ..." % self.pom.target_file)        
+        logger.info("Running 'mvn exec:java'")        
         main_class_project_relative = re.sub("/", ".", self.main.target_package) + "." + self.main.TEMPLATE_CLASS_NAME
         exec_main_parameter = "-Dexec.mainClass=" + main_class_project_relative
         execute_cmd = ['mvn', 'exec:java', exec_main_parameter, '-f', self.pom.target_file]
         subprocess.check_output(execute_cmd, stderr=subprocess.STDOUT)                
-        logger.debug("...completed 'mvn exec:java' for [%s]" % self.pom.target_file)
+        logger.info("...completed 'mvn exec:java'")
 
 class MainClassBuilder:
     """ Constructs a Java class file which contains a main() method that contains the
@@ -78,6 +80,9 @@ class MainClassBuilder:
         #ensure that nested folders in temp dir exist
         self.make_dirs(self.target_directory)
         logger.debug("MainClassBuilder [target_file: %s]" % self.target_file)
+        
+    def get_file_system_location(self):
+        return self.target_file    
         
     def make_dirs(self, directory):    
         if not os.path.exists(directory):
@@ -107,32 +112,38 @@ class MainClassBuilder:
                 if "PIPELINE-INJECTION-POINT" in line:
                     
                     # Add reader
-                    coll_reader = """CollectionReaderDescription reader = 
-                    CollectionReaderFactory.createReaderDescription("""
+                    logger.debug("Injecting reader component")
+                    coll_reader = "        CollectionReaderDescription reader = " + \
+                    "CollectionReaderFactory.createReaderDescription("
                     coll_reader += self.reader.get_short_name() + ".class"
 
                     for k,v in self.reader.get_configuration():
                         if isinstance(v, str) and not self.boolean_as_string(v):
                             v = "\"" + v + "\""                    
-                        coll_reader += ", " + self.reader.get_short_name() + ".PARAM_" + k.upper() + ", " + v
+                        parameter_pair = self.reader.get_short_name() + ".PARAM_" + k.upper() + ", " + v
+                        coll_reader += ", " + parameter_pair
+                        logger.debug("Adding parameter pair [%s]" % parameter_pair)
                 
                     coll_reader+=");\n"
                     lines.append(coll_reader)
                     
                     # Add engines
                     for i, engine in enumerate(self.engines):
-                        engine_entry = "AnalysisEngineDescription ae"+str(i)+ \
+                        logger.debug("Injecting engine component for [%s]" % engine.get_short_name())
+                        engine_entry = "        AnalysisEngineDescription ae"+str(i)+ \
                                        " = AnalysisEngineFactory.createEngineDescription(" + \
                                        engine.get_short_name() + ".class"
                         for k, v in engine.get_configuration():
                             if isinstance(v, str) and not self.boolean_as_string(v):
                                 v = "\"" + v + "\""                    
-                            engine_entry += ", " + engine.get_short_name() + ".PARAM_" + k.upper() + ", " + v
+                            parameter_pair = engine.get_short_name() + ".PARAM_" + k.upper() + ", " + v
+                            engine_entry += ", " + parameter_pair
+                            logger.debug("Adding parameter pair [%s]" % parameter_pair)
                         engine_entry += ");\n"
                         lines.append(engine_entry)
                         
                     # Add simple pipeline call    
-                    pipeline_call = "SimplePipeline.runPipeline(reader"
+                    pipeline_call = "        SimplePipeline.runPipeline(reader"
                     for i, _ in enumerate(self.engines):
                         pipeline_call+=", ae"+str(i)
                     pipeline_call+=");"
@@ -152,11 +163,14 @@ class PomXmlBuilder:
     
     def add(self, group, artifact, version):
         self.dependencies.append(
-        "<dependency>\n" +
-        "<groupId>"  + group + "</groupId>\n" + 
-        "<artifactId>" + artifact + "</artifactId>\n" +
-        "<version>"  + version + "</version>\n" +
-        "</dependency>\n")
+        "        <dependency>\n" +
+        "            <groupId>"  + group + "</groupId>\n" + 
+        "            <artifactId>" + artifact + "</artifactId>\n" +
+        "            <version>"  + version + "</version>\n" +
+        "        </dependency>\n")
+        
+    def get_file_system_location(self):
+        return self.target_file  
         
     def generate(self):
         already_included_dependencies=set()
