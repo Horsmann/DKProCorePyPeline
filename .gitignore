@@ -4,6 +4,9 @@
 # Plain-text
 *.txt
 
+# Python
+*.pyc
+
 # Log file
 *.log
 
