@@ -67,6 +67,7 @@ pipeline.execute()
 
 <h2>Specifying a component</h2>
 A component consists of at least four parameters. 
+
 ```
 component, which is the fully qualified path of the component's Java class (i.e., the import of the class in the Java file)
 artifact, the artifact id of the Maven artifact  in which the component is located
