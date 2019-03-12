@@ -1,4 +1,4 @@
-from dkpro_core_pypeline.DKProCorePyPeline import *
+from dkpro_core_pypeline.dkpro_core_pypeline import *
 from os.path import expanduser
 user_home = expanduser("~")
 

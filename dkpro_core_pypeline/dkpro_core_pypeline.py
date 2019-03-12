@@ -106,6 +106,35 @@ class MainClassBuilder:
     def boolean_as_string(self, value):    
         """ Returns True if value is a java-style boolean (true/false) as string"""
         return value == "true" or value == "false"
+
+    def engine_to_java(self, engine, i):
+        """ The provided engine is transformed into a valid 
+        Java AnalysisEngineDescription """
+        engine_entry = "        AnalysisEngineDescription ae"+str(i)+ \
+                       " = AnalysisEngineFactory.createEngineDescription(" + \
+                       engine.get_short_name() + ".class"
+        for k, v in engine.get_configuration():
+            if isinstance(v, str) and not self.boolean_as_string(v):
+                v = "\"" + v + "\""                    
+            parameter_pair = engine.get_short_name() + ".PARAM_" + k.upper() + ", " + v
+            engine_entry += ", " + parameter_pair
+            logger.debug("Adding parameter pair [%s]" % parameter_pair)
+        engine_entry += ");\n"
+        return engine_entry
+    
+    def reader_to_java(self, reader):
+        coll_reader = "        CollectionReaderDescription reader = " + \
+                      "CollectionReaderFactory.createReaderDescription(" 
+        coll_reader += reader.get_short_name() + ".class"
+
+        for k,v in reader.get_configuration():
+            if isinstance(v, str) and not self.boolean_as_string(v):
+                v = "\"" + v + "\""                    
+            parameter_pair = reader.get_short_name() + ".PARAM_" + k.upper() + ", " + v
+            coll_reader += ", " + parameter_pair
+            logger.debug("Adding parameter pair [%s]" % parameter_pair)
+        coll_reader+=");\n"        
+        return coll_reader
     
     def generate(self):
         lines=[]
@@ -122,33 +151,13 @@ class MainClassBuilder:
                     
                     # Add reader
                     logger.debug("Injecting reader component")
-                    coll_reader = "        CollectionReaderDescription reader = " + \
-                    "CollectionReaderFactory.createReaderDescription("
-                    coll_reader += self.reader.get_short_name() + ".class"
-
-                    for k,v in self.reader.get_configuration():
-                        if isinstance(v, str) and not self.boolean_as_string(v):
-                            v = "\"" + v + "\""                    
-                        parameter_pair = self.reader.get_short_name() + ".PARAM_" + k.upper() + ", " + v
-                        coll_reader += ", " + parameter_pair
-                        logger.debug("Adding parameter pair [%s]" % parameter_pair)
-                
-                    coll_reader+=");\n"
+                    coll_reader = self.reader_to_java(self.reader)
                     lines.append(coll_reader)
                     
                     # Add engines
                     for i, engine in enumerate(self.engines):
                         logger.debug("Injecting engine component for [%s]" % engine.get_short_name())
-                        engine_entry = "        AnalysisEngineDescription ae"+str(i)+ \
-                                       " = AnalysisEngineFactory.createEngineDescription(" + \
-                                       engine.get_short_name() + ".class"
-                        for k, v in engine.get_configuration():
-                            if isinstance(v, str) and not self.boolean_as_string(v):
-                                v = "\"" + v + "\""                    
-                            parameter_pair = engine.get_short_name() + ".PARAM_" + k.upper() + ", " + v
-                            engine_entry += ", " + parameter_pair
-                            logger.debug("Adding parameter pair [%s]" % parameter_pair)
-                        engine_entry += ");\n"
+                        engine_entry = self.engine_to_java(engine, i)
                         lines.append(engine_entry)
                         
                     # Add simple pipeline call    
@@ -216,6 +225,7 @@ class DKProCoreComponent():
             if k in self.__required:
                 continue
             config_parameters.append((k,v))
+        config_parameters.sort(key=lambda x:x[0])
         return config_parameters
         
    def get_group(self):
