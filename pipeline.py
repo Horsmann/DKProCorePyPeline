@@ -1,4 +1,6 @@
-from DKProCorePyPeline import *
+from dkpro_core_pypeline.DKProCorePyPeline import *
+from os.path import expanduser
+user_home = expanduser("~")
 
 reader = DKProComponent(component = "de.tudarmstadt.ukp.dkpro.core.io.text.StringReader", 
 					        group = "de.tudarmstadt.ukp.dkpro.core",
@@ -23,11 +25,11 @@ writer = DKProComponent(component = "de.tudarmstadt.ukp.dkpro.core.io.conll.Conl
 				        overwrite = "true",
 				      write_chunk = "false",
 			   write_named_entity = "false",
-				  target_location = "/Users/toobee/Desktop/targetFolderConll",
+				  target_location = user_home + "/Desktop/dkpro_output_folder",
 				  target_encoding = "utf-8",
 			   filename_extension = ".txt")
 
-pipeline = DKProPipeline("template_maven")
+pipeline = DKProPipeline()
 pipeline.set_reader(reader)
 pipeline.add_engine(segmenter)
 pipeline.add_engine(pos)

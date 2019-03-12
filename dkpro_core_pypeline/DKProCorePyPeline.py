@@ -26,11 +26,11 @@ logger.addHandler(ch)
 class DKProPipeline:
     """A DKPro pipeline. The template folder contains the prototype for a 
     Java Main class and a pom.xml"""
-    def __init__(self, template_folder):
-        #self.working_directory = tempfile.TemporaryDirectory()
-        self.working_directory = "/Users/toobee/Desktop/myTmp"
-        self.main = MainClassBuilder(template_folder, self.working_directory)
-        self.pom = PomXmlBuilder(template_folder, self.working_directory)
+    def __init__(self):
+        self.template_path = "template_maven"
+        self.working_directory = tempfile.TemporaryDirectory()
+        self.main = MainClassBuilder(template_folder, self.working_directory.name)
+        self.pom = PomXmlBuilder(template_folder, self.working_directory.name)
     
     def set_reader(self, reader):
         self.main.set_reader(reader)
