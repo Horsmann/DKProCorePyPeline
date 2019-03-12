@@ -27,10 +27,10 @@ class DKProPipeline:
     """A DKPro pipeline. The template folder contains the prototype for a 
     Java Main class and a pom.xml"""
     def __init__(self):
-        self.template_path = "template_maven"
+        self.template_path = os.path.dirname(__file__) + "/template_maven"
         self.working_directory = tempfile.TemporaryDirectory()
-        self.main = MainClassBuilder(template_folder, self.working_directory.name)
-        self.pom = PomXmlBuilder(template_folder, self.working_directory.name)
+        self.main = MainClassBuilder(self.template_path, self.working_directory.name)
+        self.pom = PomXmlBuilder(self.template_path, self.working_directory.name)
     
     def set_reader(self, reader):
         self.main.set_reader(reader)
