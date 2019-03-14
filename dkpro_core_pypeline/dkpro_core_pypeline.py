@@ -172,6 +172,8 @@ class MainClassBuilder:
                 f.write(l)
 
 class PomXmlBuilder:
+    """ Creates a pom.xml file, which contains the dependencies 
+    used by the respective component """
     def __init__(self, template_folder, working_directory):
         self.dependencies=[]
         self.template_pom = template_folder+"/pom.xml"
