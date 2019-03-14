@@ -3,6 +3,7 @@ import os
 import subprocess
 import re
 import logging
+import io
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -43,7 +44,7 @@ class UIMAPipeline:
     
     def set_reader(self, reader):
         self.main.set_reader(reader)
-        self.pom.add(reader)
+        self.pom.add_dependency(reader)
     
     def add_engine(self, engine):
         self.main.add_engine(engine)
@@ -136,7 +137,7 @@ class MainClassBuilder:
     
     def generate(self):
         lines=[]
-        with open(self.main_class, 'r', encoding='utf-8') as f:
+        with io.open(self.main_class, 'r', encoding='utf-8') as f:
             for line in f:
             
                 if "IMPORT-INJECTION" in line:
@@ -167,7 +168,7 @@ class MainClassBuilder:
                     continue
                 
                 lines.append(line)
-        with open(self.target_file, 'w', encoding='utf-8') as f:
+        with io.open(self.target_file, 'w', encoding='utf-8') as f:
             for l in lines:
                 f.write(l)
 
@@ -180,17 +181,11 @@ class PomXmlBuilder:
         self.target_file = working_directory + "/pom.xml"
 
     def add_dependency(self, component):
-        self.add_dependency(self. component.get_group(), 
-                                  component.get_artifact(),
-                                  component.get_version())
-        
-         
-    def add_dependency(self, group, artifact, version):
         self.dependencies.append(
         "        <dependency>\n" +
-        "            <groupId>"  + group + "</groupId>\n" + 
-        "            <artifactId>" + artifact + "</artifactId>\n" +
-        "            <version>"  + version + "</version>\n" +
+        "            <groupId>"  + component.get_group() + "</groupId>\n" + 
+        "            <artifactId>" + component.get_artifact() + "</artifactId>\n" +
+        "            <version>"  + component.get_version() + "</version>\n" +
         "        </dependency>\n")
         
     def get_file_system_location(self):
@@ -202,7 +197,7 @@ class PomXmlBuilder:
     def generate(self):
         already_included_dependencies=set()
         pom_lines=[]
-        with open(self.template_pom, 'r', encoding='utf-8') as f:
+        with io.open(self.template_pom, 'r', encoding='utf-8') as f:
             for line in f:
                 if "INJECTION-POINT" in line:
                     for dependency in self.dependencies:
@@ -212,12 +207,13 @@ class PomXmlBuilder:
                         already_included_dependencies.add(dependency)
                 else:
                     pom_lines.append(line)
-        with open(self.target_file, 'w', encoding='utf-8') as f:
+        with io.open(self.target_file, 'w', encoding='utf-8') as f:
             for line in pom_lines:
                 f.write(line)
 
 class DKProCoreComponent():
-   """A generic DKPro Component which represents a CollectionReaderDescription or AnalysisEngineDescription"""
+   """A generic DKPro Component which represents a CollectionReaderDescription 
+   sor AnalysisEngineDescription"""
    def __init__(self, **kwargs):
        self.__required=["component", "group", "version", "artifact"]
        self.__dict=kwargs
