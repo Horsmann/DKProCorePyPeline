@@ -3,7 +3,6 @@ import os
 import subprocess
 import re
 import logging
-import io
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -137,7 +136,7 @@ class MainClassBuilder:
     
     def generate(self):
         lines=[]
-        with io.open(self.main_class, 'r', encoding='utf-8') as f:
+        with open(self.main_class, 'r', encoding='utf-8') as f:
             for line in f:
             
                 if "IMPORT-INJECTION" in line:
@@ -168,7 +167,7 @@ class MainClassBuilder:
                     continue
                 
                 lines.append(line)
-        with io.open(self.target_file, 'w', encoding='utf-8') as f:
+        with open(self.target_file, 'w', encoding='utf-8') as f:
             for l in lines:
                 f.write(l)
 
@@ -197,7 +196,7 @@ class PomXmlBuilder:
     def generate(self):
         already_included_dependencies=set()
         pom_lines=[]
-        with io.open(self.template_pom, 'r', encoding='utf-8') as f:
+        with open(self.template_pom, 'r', encoding='utf-8') as f:
             for line in f:
                 if "INJECTION-POINT" in line:
                     for dependency in self.dependencies:
@@ -207,7 +206,7 @@ class PomXmlBuilder:
                         already_included_dependencies.add(dependency)
                 else:
                     pom_lines.append(line)
-        with io.open(self.target_file, 'w', encoding='utf-8') as f:
+        with open(self.target_file, 'w', encoding='utf-8') as f:
             for line in pom_lines:
                 f.write(line)
 
