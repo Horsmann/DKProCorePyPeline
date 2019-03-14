@@ -30,11 +30,11 @@ Java DKPro Core pipeline version
 becomes the following Pyhton DKPro Core pipeline
 
 ```python
-reader = CollectionReader(group = "de.tudarmstadt.ukp.dkpro.core",
-                       artifact = "de.tudarmstadt.ukp.dkpro.core.io.text-asl",
-                      component = "de.tudarmstadt.ukp.dkpro.core.io.text.StringReader", 		       
+reader = CollectionReader(group = "de.tudarmstadt.ukp.dkpro.core", # Maven group id
+                       artifact = "de.tudarmstadt.ukp.dkpro.core.io.text-asl", # Maven artifact id
+                      component = "de.tudarmstadt.ukp.dkpro.core.io.text.StringReader", # Java import of class 		
+		        version = "1.10.0",
 	               language = "en", 
-                        version = "1.10.0",
                     document_id = "123",
 	          document_text = "This is a text. Isn't this cool?")
 segmenter = AnalysisEngine(group = "de.tudarmstadt.ukp.dkpro.core",
@@ -88,9 +88,9 @@ A Java parameter `MyEngine.PARAM_SOURCE_LOCATION, '/usr/home/data.txt'` becomes 
 
 2) Maven
 
-3) both tools must be setup correctly to work on the command line or shell environment
+3) Both tools must be setup correctly to work on the command line or shell environment
 
 4) Python3
 ```
 
-Java version depends on the DKPro version you are using.
+The required Java version depends on the DKPro version you are using but everything from 1.8+ works (version 1.10.0)
