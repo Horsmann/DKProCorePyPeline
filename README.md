@@ -33,10 +33,10 @@ becomes the following Pyhton DKPro Core pipeline
 reader = CollectionReader(group = "de.tudarmstadt.ukp.dkpro.core", # Maven group id
                        artifact = "de.tudarmstadt.ukp.dkpro.core.io.text-asl", # Maven artifact id
                       component = "de.tudarmstadt.ukp.dkpro.core.io.text.StringReader", # Java import of class 		
-		        version = "1.10.0",
-	               language = "en", 
-                    document_id = "123",
-	          document_text = "This is a text. Isn't this cool?")
+		        version = "1.10.0", # Maven version of artifact
+	               language = "en", # StringReader parameter
+                    document_id = "123", # StringReader parameter
+	          document_text = "This is a text. Isn't this cool?") # StringReader parameter
 segmenter = AnalysisEngine(group = "de.tudarmstadt.ukp.dkpro.core",
                         artifact = "de.tudarmstadt.ukp.dkpro.core.tokit-asl",
                        component = "de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter",
