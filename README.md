@@ -56,7 +56,7 @@ writer = AnalysisEngine(group = "de.tudarmstadt.ukp.dkpro.core",
               target_location = ".../outputFolder/", # ..etc.
 	      target_encoding = "utf-8")
 
-pipeline = UIMAPipeline("template_maven")
+pipeline = UIMAPipeline()
 pipeline.set_reader(reader)
 pipeline.add_engine(segmenter)
 pipeline.add_engine(pos)
