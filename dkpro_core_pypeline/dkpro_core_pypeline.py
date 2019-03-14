@@ -43,13 +43,11 @@ class UIMAPipeline:
     
     def set_reader(self, reader):
         self.main.set_reader(reader)
-        self.pom.add(group=reader.get_group(), 
-                     artifact=reader.get_artifact(), 
-                    version=reader.get_version())
+        self.pom.add(reader)
     
     def add_engine(self, engine):
         self.main.add_engine(engine)
-        self.pom.add(group=engine.get_group(), artifact=engine.get_artifact(), version=engine.get_version())
+        self.pom.add_dependency(engine)
         
     def execute(self):
         """ Generates a Java class with the specified components and creates
@@ -113,7 +111,7 @@ class MainClassBuilder:
         engine_entry = "        AnalysisEngineDescription ae"+str(i)+ \
                        " = AnalysisEngineFactory.createEngineDescription(" + \
                        engine.get_short_name() + ".class"
-        for k, v in engine.get_configuration():
+        for k, v in engine.get_additional_parameter():
             if isinstance(v, str) and not self.boolean_as_string(v):
                 v = "\"" + v + "\""                    
             parameter_pair = engine.get_short_name() + ".PARAM_" + k.upper() + ", " + v
@@ -127,7 +125,7 @@ class MainClassBuilder:
                       "CollectionReaderFactory.createReaderDescription(" 
         coll_reader += reader.get_short_name() + ".class"
 
-        for k,v in reader.get_configuration():
+        for k,v in reader.get_additional_parameter():
             if isinstance(v, str) and not self.boolean_as_string(v):
                 v = "\"" + v + "\""                    
             parameter_pair = reader.get_short_name() + ".PARAM_" + k.upper() + ", " + v
@@ -178,8 +176,14 @@ class PomXmlBuilder:
         self.dependencies=[]
         self.template_pom = template_folder+"/pom.xml"
         self.target_file = working_directory + "/pom.xml"
-    
-    def add(self, group, artifact, version):
+
+    def add_dependency(self, component):
+        self.add_dependency(self. component.get_group(), 
+                                  component.get_artifact(),
+                                  component.get_version())
+        
+         
+    def add_dependency(self, group, artifact, version):
         self.dependencies.append(
         "        <dependency>\n" +
         "            <groupId>"  + group + "</groupId>\n" + 
@@ -189,6 +193,9 @@ class PomXmlBuilder:
         
     def get_file_system_location(self):
         return self.target_file  
+        
+    def get_added_dependencies(self):
+        return self.dependencies
         
     def generate(self):
         already_included_dependencies=set()
@@ -219,7 +226,10 @@ class DKProCoreComponent():
                raise ValueError("Required parameter [%s] is missing" % required_key)
         
 
-   def get_configuration(self):
+   def get_additional_parameter(self):
+        """ Returns the parameters, which are unique to a component.
+        The returned parameters will not include: 'artifact', 'group', 'version' 
+        and 'component'. The parameters are returned in alphabetic order"""
         config_parameters=[]
         for k,v in self.__dict.items():
             if k in self.__required:
